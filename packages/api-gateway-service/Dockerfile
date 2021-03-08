@@ -1,6 +1,6 @@
 FROM node:12-alpine
 LABEL Name=one-platform-api-gateway-service \
-  Version=0.0.1 \
+  Version=0.1.0 \
   maintainer="mdeshmuk@redhat.com"
 
 # Building the user-group microservice
