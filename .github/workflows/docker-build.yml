@@ -24,7 +24,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Generate Tag name
-        run: echo "TAG=$(echo $GITHUB_REF | cut -c 1-6)" >> $GITHUB_ENV
+        run: echo "TAG1=$(echo $GITHUB_REF | cut -c 11-)" >> $GITHUB_ENV
       # Build and publish docker container
       - uses: elgohr/Publish-Docker-Github-Action@3.02
         with:
