@@ -6,8 +6,10 @@ name: Docker Build
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ test/gh-actions ]
-    paths: [ 'packages/api-gateway-service' ]
+    branches:
+      - 'master'
+      - 'test/gh-actions'
+    paths: [ 'packages/api-gateway-service/**' ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -18,18 +20,18 @@ jobs:
   build-api-gateway:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
+      - name: Generate Tag name
+        run: echo "TAG=$(echo $GITHUB_REF | cut -c 1-6)" >> $GITHUB_ENV
       # Build and publish docker container
       - uses: elgohr/Publish-Docker-Github-Action@3.02
         with:
           name: deshmukhmayur/api-gateway
-          default_branch: test/gh-actions
           username: ${{ github.actor }}
           password: ${{ secrets.CR_PAT }}
           registry: ghcr.io
           context: packages/api-gateway-service
+          no_push: true
+          tags: "latest,${{ env.TAG }}"
