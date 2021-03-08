@@ -30,5 +30,6 @@ jobs:
           name: api-gateway
           default_branch: test/gh-actions
           username: ${{ github.actor }}
+          password: ${{ secrets.CR_PAT }}
           registry: docker.pkg.github.com
           context: packages/api-gateway-service
