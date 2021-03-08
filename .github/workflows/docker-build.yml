@@ -8,7 +8,8 @@ on:
   push:
     branches:
       - 'master'
-      - 'test/gh-actions'
+    tags:
+      - '*'
     paths: [ 'packages/api-gateway-service/**' ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -23,15 +24,21 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Generate Tag name
-        run: echo "TAG=$(echo $GITHUB_REF | cut -c 1-6)" >> $GITHUB_ENV
+      - name: Generate QA tag
+        run: echo "TAG=qa" >> $GITHUB_ENV
+      - name: Generate stable tag
+        if: startsWith(github.ref, 'refs/tags')
+        run: echo "TAG=$TAG,stable" >> $GITHUB_ENV
       # Build and publish docker container
-      - uses: elgohr/Publish-Docker-Github-Action@3.02
+      - name: Build and publish to ghcr
+        uses: elgohr/Publish-Docker-Github-Action@3.02
         with:
           name: deshmukhmayur/api-gateway
           username: ${{ github.actor }}
           password: ${{ secrets.CR_PAT }}
           registry: ghcr.io
           context: packages/api-gateway-service
-          no_push: true
           tags: "latest,${{ env.TAG }}"
+          no_push: true
+          tag_names: true
+          tag_semver: true
